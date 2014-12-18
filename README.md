@@ -47,5 +47,12 @@ costof(default, start, end, path list)
  returns int
   
   
+
+Later:
+
+Well, that didn't work well, since python's recursion limit is 1000.  :)
+
+With some creative caching of the totals to trim some trees, I might be able to get this to work anyway, but it wouldn't scale to a million in any case, so I need to do this with iteration.
+
  
 

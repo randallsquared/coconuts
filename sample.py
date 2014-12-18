@@ -2,11 +2,19 @@
 
 import sys
 
+# we'll get these from file shortly
+defaultCost = None
+inputStreams = []
+
+# a stream is (start, end, cost); for more positions I'd probably give up and use a dict
+START, END, COST = (0, 1, 2)
+
+
 def lowest(cost, start, end, possibleStreams):
     current = []
     if (end - start < 1) or not possibleStreams:
         return current
-    for i, stream in enumerate(possibleStreams):
+    for stream in possibleStreams:
         working = [stream] + lowest(cost, stream[END], end, streamsAfter(stream[END], possibleStreams))
         if costOf(cost, start, end, working) < costOf(cost, start, end, current): 
             current = working
@@ -29,14 +37,6 @@ def costOf(cost, start, end, streams):
         pos = stream[1]
     return total
 
-
-
-# we'll get these from file shortly
-defaultCost = None
-inputStreams = []
-
-# a stream is (start, end, cost); for more positions I'd probably give up and use a dict
-START, END, COST = (0, 1, 2)
 
 if(len(sys.argv) < 2): 
     print("Please supply a filename as the first parameter to this script.\n")
