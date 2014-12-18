@@ -1,34 +1,20 @@
+#!/usr/bin/env python3
 
-
-
-# we'll get these from file shortly
-defaultCost = 50
-inputStreams = [(0, 5, 10), (1, 3, 5), (3, 7, 12), (6, 11, 20), (14, 17, 8), (19, 24, 14), (21, 22, 2)]
-
-
-
-# a stream is (start, end, cost); for more positions I'd probably give up and use a dict
-START, END, COST = (0, 1, 2)
-streams = sorted(inputStreams, key = lambda x: x[START])
-start = 0
-end = sorted(streams, key = lambda x: x[END])[-1][END]
-
+import sys
 
 def lowest(cost, start, end, possibleStreams):
     current = []
     if (end - start < 1) or not possibleStreams:
         return current
     for i, stream in enumerate(possibleStreams):
-        streamEnd = stream[1]
-        working = [stream] + lowest(cost, streamEnd, end, streamsAfter(streamEnd, possibleStreams))
-        print(working)
+        working = [stream] + lowest(cost, stream[END], end, streamsAfter(stream[END], possibleStreams))
         if costOf(cost, start, end, working) < costOf(cost, start, end, current): 
             current = working
     return current
 
 def streamsAfter(endOfOldStream, streams):
     for idx, stream in enumerate(streams):
-        if(endOfOldStream <= stream[START]):
+        if endOfOldStream <= stream[START]:
             return streams[idx:]
     return []
 
@@ -43,5 +29,46 @@ def costOf(cost, start, end, streams):
         pos = stream[1]
     return total
 
+
+
+# we'll get these from file shortly
+defaultCost = None
+inputStreams = []
+
+# a stream is (start, end, cost); for more positions I'd probably give up and use a dict
+START, END, COST = (0, 1, 2)
+
+if(len(sys.argv) < 2): 
+    print("Please supply a filename as the first parameter to this script.\n")
+    exit()
+
+try:
+    config = open(sys.argv[1], 'r')
+except FileNotFoundError:
+    print("Please supply a valid configuration file as the first parameter to this script.\n")
+    exit()
+
+first = True
+for line in open(sys.argv[1], 'r'):
+    if first:
+        defaultCost = int(line)
+        first = False
+        continue
+    # otherwise, we have a stream triple
+    triple = line.split(' ')
+    inputStreams.append((int(triple[START]), int(triple[END]), int(triple[COST])))
+
+if not defaultCost: 
+    print("Please supply a valid configuration file with the first line containing a cost integer.\n")
+    exit()
+
+streams = sorted(inputStreams, key = lambda x: x[START])
+start = 0
+end = sorted(streams, key = lambda x: x[END])[-1][END]
+
+answer = lowest(defaultCost, start, end, streams)
+total = costOf(defaultCost, start, end, answer)
+
+print("The lowest cost path found had a cost of %s and jet streams %s\n" % (total, answer))
 
 
