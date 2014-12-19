@@ -16,15 +16,22 @@ class Coconut:
     def lowest(self):
         current = []
         currentCost = ( self.end - self.start ) * self.defaultCost
+        totalPaths = 0
+        validPaths = 0
+        betterPaths = 0
         for i in range(0, len(self.streams)):
-            print("starting with i: %s" % i)
             for streamPath in itertools.combinations(self.streams, i):
+                totalPaths += 1
                 if self.validStreamPath(streamPath):
+                    validPaths += 1
                     cost = self.costOf(streamPath)
-                    print("cost(%s): %s" % (str(streamPath), cost))
+                    #print("cost(%s): %s" % (str(streamPath), cost))
                     if cost < currentCost:
+                        betterPaths += 1
                         current = streamPath
                         currentCost = cost
+                if (totalPaths % 1000000) == 0:
+                    print("pathLength: %05d total: %012d valid: %012d better: %012d" % (i, totalPaths, validPaths, betterPaths))
         return current
     
     def validStreamPath(self, streamPath):
