@@ -54,5 +54,8 @@ Well, that didn't work well, since python's recursion limit is 1000.  :)
 
 With some creative caching of the totals to trim some trees, I might be able to get this to work anyway, but it wouldn't scale to a million in any case, so I need to do this with iteration.
 
+Using itertools, I've written a version that I believe will get the right answer, eventually (and does on the sample data).  Unfortunately, I'm not yet sure how long it takes on the 5000 line flight data, since it's STILL RUNNING.   I'm pretty sure that a good solution shouldn't continue running for minutes, so I need to look into doing it more efficiently.
+
+
  
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys
+import sys, itertools
 
 # we'll get these from file shortly
 defaultCost = None
@@ -10,21 +10,44 @@ inputStreams = []
 START, END, COST = (0, 1, 2)
 
 
-def lowest(cost, start, end, possibleStreams):
+
+# def lowest(cost, start, end, possibleStreams):
+#     current = []
+#     if (end - start < 1) or not possibleStreams:
+#         return current
+#     for stream in possibleStreams:
+#         working = [stream] + lowest(cost, stream[END], end, streamsAfter(stream[END], possibleStreams))
+#         if costOf(cost, start, end, working) < costOf(cost, start, end, current): 
+#             current = working
+#     return current
+# 
+# def streamsAfter(endOfOldStream, streams):
+#     for idx, stream in enumerate(streams):
+#         if endOfOldStream <= stream[START]:
+#             return streams[idx:]
+#     return []
+
+
+def lowest(possibleStreams):
     current = []
-    if (end - start < 1) or not possibleStreams:
-        return current
-    for stream in possibleStreams:
-        working = [stream] + lowest(cost, stream[END], end, streamsAfter(stream[END], possibleStreams))
-        if costOf(cost, start, end, working) < costOf(cost, start, end, current): 
-            current = working
+    currentCost = ( end - start ) * defaultCost
+    for i in range(len(possibleStreams), 0, -1):
+        for streamPath in itertools.combinations(possibleStreams, i):
+            if validStreamPath(streamPath):
+                cost = costOf(defaultCost, start, end, streamPath)
+                print("cost(%s, %s, %s, %s): %s" % (defaultCost, start, end, str(streamPath), cost))
+                if cost < currentCost:
+                    current = streamPath
+                    currentCost = cost
     return current
 
-def streamsAfter(endOfOldStream, streams):
-    for idx, stream in enumerate(streams):
-        if endOfOldStream <= stream[START]:
-            return streams[idx:]
-    return []
+def validStreamPath(streams):
+    oldEnd = 0
+    for stream in streams:
+        if stream[START] < oldEnd:
+            return False
+        oldEnd = stream[END]
+    return True
 
 def costOf(cost, start, end, streams):
     if not streams: 
@@ -35,6 +58,7 @@ def costOf(cost, start, end, streams):
         total += (stream[0] - pos) * cost
         total += stream[2]
         pos = stream[1]
+    total += (end - pos) * cost
     return total
 
 
@@ -66,7 +90,7 @@ streams = sorted(inputStreams, key = lambda x: x[START])
 start = 0
 end = sorted(streams, key = lambda x: x[END])[-1][END]
 
-answer = lowest(defaultCost, start, end, streams)
+answer = lowest(streams)
 total = costOf(defaultCost, start, end, answer)
 
 print("The lowest cost path found had a cost of %s and jet streams %s\n" % (total, answer))
