@@ -5,7 +5,6 @@ import sys, itertools
 START, END, COST = (0, 1, 2)
 
 class Coconut:
-
     def __init__(self, defaultCost, streams):
         # a stream is (start, end, cost); for more positions I'd probably give up and use a dict
         self.streams = sorted(streams, key = lambda x: x[START])
