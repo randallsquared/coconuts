@@ -16,6 +16,8 @@ class Coconut:
     def lowest(self):
         current = []
         currentCost = ( self.end - self.start ) * self.defaultCost
+
+        # logging
         totalPaths = 0
         validPaths = 0
         betterPaths = 0

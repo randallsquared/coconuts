@@ -56,6 +56,5 @@ With some creative caching of the totals to trim some trees, I might be able to 
 
 Using itertools, I've written a version that I believe will get the right answer, eventually (and does on the sample data).  Unfortunately, I'm not yet sure how long it takes on the 5000 line flight data, since it's STILL RUNNING.   I'm pretty sure that a good solution shouldn't continue running for minutes, so I need to look into doing it more efficiently.
 
-
  
 
