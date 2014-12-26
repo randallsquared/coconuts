@@ -4,6 +4,12 @@ import sys, itertools
 
 START, END, COST = (0, 1, 2)
 
+def report(x, defaultCost):
+    totalRun = (x[END] - x[START]) * 50
+    ans = totalRun / x[COST] 
+    print("total run: %s divided by cost %s was %s" % (totalRun, x[COST], ans))
+    return ans
+
 class Coconut:
     def __init__(self, defaultCost, streams):
         # a stream is (start, end, cost); for more positions I'd probably give up and use a dict
@@ -12,6 +18,8 @@ class Coconut:
 
         self.start = 0
         self.end = sorted(streams, key = lambda x: x[END])[-1][END]
+        self.efficient = sorted(streams, key = lambda x: -(((x[END] - x[START]) * 50) - x[COST]))
+        self.mostEfficient = sorted(self.efficient[:25], key = lambda x: x[START])
     
     def lowest(self):
         current = []
@@ -21,8 +29,8 @@ class Coconut:
         totalPaths = 0
         validPaths = 0
         betterPaths = 0
-        for i in range(0, len(self.streams)):
-            for streamPath in itertools.combinations(self.streams, i):
+        for i in range(0, len(self.mostEfficient)):
+            for streamPath in itertools.combinations(self.mostEfficient, i):
                 totalPaths += 1
                 if self.validStreamPath(streamPath):
                     validPaths += 1
@@ -32,7 +40,7 @@ class Coconut:
                         betterPaths += 1
                         current = streamPath
                         currentCost = cost
-                if (totalPaths % 1000000) == 0:
+                if (totalPaths % 10) == 0:
                     print("pathLength: %05d total: %012d valid: %012d better: %012d" % (i, totalPaths, validPaths, betterPaths))
         return current
     
